@@ -1,6 +1,5 @@
 require 'data_mapper'
 
-#MODEL
 DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/cart.db")
 
 class User
