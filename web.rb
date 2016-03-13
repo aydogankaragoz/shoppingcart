@@ -1,55 +1,74 @@
 require 'rubygems'
 require 'sinatra'
-require 'data_mapper'
 require 'json'
 
-DataMapper::setup(:default, "sqlite3://#{Dir.pwd}/cart.db")
+require './model.rb'
 
-class User
-  include DataMapper::Resource
-  property :id,         Serial
-  property :username, Text
-  property :Name, Text
-  property :email, Text
-  property :password, Text
-  has n, :carts
+post '/form' do
+  "You said '#{params[:message]}'"
 end
 
-class Product
-  include DataMapper::Resource
-  property :name, Text, :key => true
-  property :price, Integer
+## Create a new cart
+post '/carts' do
+  c = Cart.create(:user => User.get(params[:username]) )
+  puts "11111111Creating a Cart with id, '#{c.identifier}' for: '#{params[:username]}'"
+  "Creating a Cart with id, '#{c.identifier}' for: '#{params[:username]}'"
 end
 
-class Cart
-  include DataMapper::Resource
-  property :id, Serial
-  belongs_to :user  # defaults to :required => true
-  has n, :cartitems
+## Add product to the cart
+post '/carts/:cart_id/products' do
+  # check if there is quantity?
+  puts '8888888888888888888888'
+
+  if params[:quantity]
+    quantity = params[:quantity]
+  else
+    quantity = 1
+  end
+
+  cart_id = params[:cart_id]
+  product = params[:product]
+
+  puts "cart_id: #{cart_id}"
+  puts "product: #{product}"
+  puts "quantity: #{quantity}"
+
+#  Cartitem.create(:cart => Cart.get(params[:]), :product => Product.get(params[:]
+
 end
 
-class Cartitem
-  include DataMapper::Resource
-  property :quantity, Integer
-  property :name, Text
-  property :price, Integer
-  belongs_to :cart, :key => true
-  has n, :products
+## Remove product from the cart
+delete '/carts/:cart_id/products/:product_id' do
+  puts '33333333DELETE'
+  puts "cart_id: #{params[:cart_id]}"
+  puts "product: #{params[:product_id]}"
 end
 
-DataMapper.finalize.auto_upgrade!
+## Clean cart
+put '/carts/:cart_id/clean' do
+  puts '444444444PUT'
+end
 
-puts 'creating ex data: users'
-User.create(:username => 'firstuser', :Name => 'First', :email => 'first@cart.com', :password => 'xx')
-User.create(:username => 'seconduser', :Name => 'Second', :email => 'second@cart.com', :password => 'xx')
-User.create(:username => 'thirduser', :Name => 'Third', :email => 'third@cart.com', :password => 'xx')
+## Set quantity for a product
+put '/carts/:cart_id/products/:product_id' do
+  puts '555555555PUT'
+  puts "cart_id: #{params[:cart_id]}"
+  puts "product_id: #{params[:product_id]}"
+  puts "quantity: #{params[:quantity]}"
+end
+## Returns detail of the cart
+get '/carts/:cart_id' do
+  puts "cart_id: #{params[:cart_id]}"
+  puts 'toplam'
+end
 
-puts 'creating ex data: products '
-Product.create(:name => 'iphone1', :price => 100)
-Product.create(:name => 'iphone2', :price => 200)
-Product.create(:name => 'iphone3', :price => 300)
-Product.create(:name => 'iphone4', :price => 400)
-Product.create(:name => 'iphone5', :price => 500)
+
+get '/hello/:name' do |n|
+  # matches "GET /hello/foo" and "GET /hello/bar"
+  # params['name'] is 'foo' or 'bar'
+  # n stores params['name']
+  "Hello #{n}!"
+end
 
 get '/?' do
   @items = Item.all(:order => :created.desc)
