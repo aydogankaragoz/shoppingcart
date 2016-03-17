@@ -5,7 +5,7 @@ require './model.rb'
 
 ## Create a new cart
 post '/carts/?' do
-  user = User.get(params[:username]) 
+  user = User.get(params[:username])
   if user == nil
     return { :status => 400, :message => 'Username not found in database!' }.to_json
   end
@@ -67,7 +67,7 @@ delete '/carts/:cart_id/products/:product' do
   if cart == nil
     return { :status => 400, :message => 'Invalid cart_id!' }.to_json
   end
-  
+
   product = Product.get(params[:product])
   if product == nil
     return { :status => 400, :message => 'Invalid product!' }.to_json
@@ -101,7 +101,7 @@ put '/carts/:cart_id/clean' do
 
   if Cartitem.count(:cart => Cart.get(params[:cart_id])) == 0
     return { :status => 400, :message => 'Cart is already empty!' }.to_json
-  else 
+  else
     cartitem = Cartitem.all(:cart => Cart.get(params[:cart_id])).destroy
     return { :status => 200, :message => 'All items removed!' }.to_json
   end
