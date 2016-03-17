@@ -108,7 +108,7 @@ put '/carts/:cart_id/clean' do
 end
 
 ## Set quantity for a product
-put '/carts/:cart_id/products/:product_id' do
+put '/carts/:cart_id/products/:product' do
 
   cart = Cart.get(params[:cart_id])
   if cart == nil
