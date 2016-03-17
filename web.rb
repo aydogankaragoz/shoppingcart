@@ -11,7 +11,7 @@ post '/carts/?' do
   end
 
   if Cart.count(:user => user) != 0
-    return { :status => 400, :message => 'This user already has an Cart!' }.to_json
+    return { :status => 400, :message => 'This user already has a cart!' }.to_json
   end
 
   c = Cart.create(:user => user )
